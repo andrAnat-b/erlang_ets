@@ -33,13 +33,13 @@ load_from_disk(FileName) ->
 
 init(_) ->
     %% Create the ETS table
-    ets:new(user_table, [named_table, public, set]),
+    ets:new(user_table, [named_table, public, set]), %% якщо звернення будуть через запити до ГС то можна не робити публічною і іменованою
     {ok, []}.
 
 handle_call({add_user, Name, Phone}, _From, State) ->
     case ets:info(user_table, size) of
         Size when is_integer(Size) ->
-            Id = Size + 1,
+            Id = Size + 1, %% якщо я додам 10 юзерів а потім видалю 1ших 2х то поведінка буде не зовсім очікувана
             User = {Id, Name, Phone, 0},
             ets:insert(user_table, User),
             {reply, {ok, Id}, State};
@@ -55,7 +55,7 @@ handle_call({get_user, Id}, _From, State) ->
         [] ->
             {reply, {error, not_found}, State}
     end;
-handle_call({update_user,Id, NewUser}, _From, State) ->
+handle_call({update_user,Id, NewUser}, _From, State) -> %% якщо я захочу проапдейтити юзера з ід 4 і передам NewUser = {33, ...} що буде?
     Result = ets:lookup(user_table, Id),
     io:format("Result: ~p~n", [Result]),
     case Result of
