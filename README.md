@@ -1,1 +1,1 @@
-# erlang_ets
+# Ihor Horobets
